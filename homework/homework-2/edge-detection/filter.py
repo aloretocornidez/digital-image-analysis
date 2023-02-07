@@ -1,8 +1,5 @@
-from PIL import Image, ImageFilter
+from PIL import Image
 import math
-
-# Using click as a command line interface API
-import click
 
 
 # This function serves as a wrapper for image processing in a system.
@@ -130,7 +127,18 @@ def rmsFilter(row, column, params):
 
 
 def edgeDetection(parameters):
-    print('In edge detection.')
+    # Radius of the filter.
+    radius = parameters[2]
+    image = parameters[0]
+
+    # Width and Height of the image for bounds checking.
+    width, height = image.size
+    sumOfPixelValues = 0
+    totalNumberOfPixels = 0
+
+    for horizontal in range(radius):
+        for vertical in range(radius):
+            
 
 
 def filterSelectorWrapper(row, column, parameters):
@@ -150,7 +158,6 @@ def filterSelectorWrapper(row, column, parameters):
 
 # Prints the pixel values in an image.
 def printImagePixelValues(image):
-    width, height = image.size
 
     rowArray = [309, 310, 311, 312, 313]
     columnArray = [309, 310, 311, 312, 313]
@@ -191,21 +198,14 @@ def printImagePixelValues(image):
 
 def main():
 
-
-
-
-
     # Open image using PIL
     originalImage = Image.open("cman.png")
 
-    # Create Input Buffer Image
+    # Create input image buffer
     inputImage = originalImage.copy()
 
-    # Extracting the width and height of the image.
-    width, height = inputImage.size
-
     # Setting up to call edge detection with a threshold of 35.
-    filterType = 'rmsFilter'
+    filterType = 'edgeDetection'
 
     filterSize = 3
 

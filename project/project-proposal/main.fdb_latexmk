@@ -1,13 +1,13 @@
 # Fdb version 3
-["bibtex main"] 1675321401 "main.aux" "main.bbl" "main" 1675322833
+["bibtex main"] 1675356521 "main.aux" "main.bbl" "main" 1675356525
   "/usr/share/texmf-dist/bibtex/bst/base/ieeetr.bst" 1650183167 18361 1a00e58565e7f19bf2b3e1bfb82254ae ""
-  "main.aux" 1675322833 245 33d920bcd030147c37f125b3d3377bf5 "pdflatex"
-  "refs.bib" 1675321002 1687 eed5d558f6bc3620b2a8b12e040daead ""
+  "main.aux" 1675356525 245 33d920bcd030147c37f125b3d3377bf5 "pdflatex"
+  "refs.bib" 1675355949 1687 eed5d558f6bc3620b2a8b12e040daead ""
   (generated)
   "main.bbl"
   "main.blg"
-["pdflatex"] 1675322832 "/home/alan-manuel/Downloads/school/532-digital-image-analysis/project/project-proposal/main.tex" "main.pdf" "main" 1675322833
-  "/home/alan-manuel/Downloads/school/532-digital-image-analysis/project/project-proposal/main.tex" 1675322832 17416 526f9bd9627bab5553fba85cc5e0214b ""
+["pdflatex"] 1675356525 "/home/alan-manuel/Downloads/532-digital-image-analysis/project/project-proposal/main.tex" "main.pdf" "main" 1675356525
+  "/home/alan-manuel/Downloads/532-digital-image-analysis/project/project-proposal/main.tex" 1675356524 17416 526f9bd9627bab5553fba85cc5e0214b ""
   "/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc" 1650183167 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1650183167 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1650183167 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -71,11 +71,11 @@
   "/usr/share/texmf-dist/tex/latex/psnfss/ot1ptm.fd" 1650183167 961 15056f4a61917ceed3a44e4ac11fcc52 ""
   "/usr/share/texmf-dist/tex/latex/xcolor/xcolor.sty" 1650183167 56029 3f7889dab51d620aa43177c391b7b190 ""
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1650183167 39911 2da6c67557ec033436fe5418a70a8a61 ""
-  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1675313555 4278762 af3ac1370db81a450c1118eabf1fe718 ""
-  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1675313540 2927655 eb0c6dd430ded96205bb883a2fe9878e ""
-  "main.aux" 1675322833 245 33d920bcd030147c37f125b3d3377bf5 "pdflatex"
-  "main.bbl" 1675321401 485 9e3ddce285a8e6d0b1dd93eb46b6854a "bibtex main"
-  "main.tex" 1675322832 17416 526f9bd9627bab5553fba85cc5e0214b ""
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1669076663 4278762 af3ac1370db81a450c1118eabf1fe718 ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1669076660 2927666 81fa7c3efaeb6423cf6308cf3516017e ""
+  "main.aux" 1675356525 245 33d920bcd030147c37f125b3d3377bf5 "pdflatex"
+  "main.bbl" 1675356522 485 9e3ddce285a8e6d0b1dd93eb46b6854a "bibtex main"
+  "main.tex" 1675356524 17416 526f9bd9627bab5553fba85cc5e0214b ""
   (generated)
   "main.aux"
   "main.log"

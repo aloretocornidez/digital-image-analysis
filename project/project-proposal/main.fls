@@ -1,7 +1,7 @@
-PWD /home/alan-manuel/Downloads/school/532-digital-image-analysis/project/project-proposal
+PWD /home/alan-manuel/Downloads/532-digital-image-analysis/project/project-proposal
 INPUT /usr/share/texmf-dist/web2c/texmf.cnf
 INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
-INPUT /home/alan-manuel/Downloads/school/532-digital-image-analysis/project/project-proposal/main.tex
+INPUT /home/alan-manuel/Downloads/532-digital-image-analysis/project/project-proposal/main.tex
 OUTPUT main.log
 INPUT /usr/share/texmf-dist/tex/latex/ieeetran/IEEEtran.cls
 INPUT /usr/share/texmf-dist/tex/latex/ieeetran/IEEEtran.cls
