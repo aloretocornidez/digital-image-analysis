@@ -218,10 +218,42 @@ def nonMaximumSuppression(parameters):
     gradientMagnitudeMap = parameters["gradientMagnitude"]
     gradientDirectionMap = parameters["gradientDirection"]
 
+    width, height = parameters["image"].size
     if(keyNotInDict(parameters, "nms")):
-        width, height = parameters["image"].size
-        parameters["nms"] = Image.new('F', (width, height))
+        parameters["nms"] = Image.new('L', (width, height))
     nmsMap = parameters["nms"]
+
+
+    for row in range(height):
+        for column in range(width):
+            magnitude = gradientMagnitudeMap.getpixel((column, row))
+            direction = gradientDirectionMap.getpixel((column, row))
+
+            if direction < 0:
+                direction = direction + math.pi
+
+            # direction is 0 < theta < 45
+            if direction < math.pi / 4:
+                condition = (row - 1 >= 1)
+                condition = condition and (column + 1 <= width)
+                condition = condition and math.tan(direction) * gradientMagnitudeMap.getpixel((column + 1, row - 1)) + (1 - math.tan(direction)) * gradientMagnitudeMap.getpixel((column + 1, row)) > magnitude
+                
+                if (condition):
+
+                    nmsMap.putpixel((column, row), 0)
+
+                condition = (row + 1 <= height)
+                condition = condition and (column - 1 >= 1)
+                condition = condition and math.tan(direction) * gradientMagnitudeMap.getpixel((column - 1, row + 1)) + (1 - math.tan(direction)) * gradientMagnitudeMap.getpixel((column - 1, row)) > magnitude
+                
+                if (condition):
+
+                    nmsMap.putpixel((column, row), 0)
+            
+            
+
+
+            # print(f"[{row}, {column}]: {gradientDirectionMap.getpixel((column, row))}")
 
 
 
@@ -315,8 +347,12 @@ def edgeDetection(row, column, parameters):
 
     # calculating gradient diection. Adding it to the pixel map of the gradient magnitude
     gradientDirection = math.atan2(f2, f1)
-    gradientDirectionDegrees = (180 / math.pi) * gradientDirection
-    gradientDirectionMap.putpixel((column, row), gradientDirectionDegrees)
+    gradientDirectionMap.putpixel((column, row), gradientDirection)
+
+    # converting direction to degrees.
+    # gradientDirectionDegrees = (180 / math.pi) * gradientDirection
+    # gradientDirectionMap.putpixel((column, row), gradientDirectionDegrees)
+
 
 
     
@@ -391,20 +427,20 @@ def main():
     postSweeping(parameters)
 
     
-    print('Printing f1 values')
-    printImagePixelValues(parameters["f1"])
+    # print('Printing f1 values')
+    # printImagePixelValues(parameters["f1"])
 
-    print('Printing f2 values')
-    printImagePixelValues(parameters["f2"])
+    # print('Printing f2 values')
+    # printImagePixelValues(parameters["f2"])
 
-    print('Printing gradient magnitude values')
-    printImagePixelValues(parameters["gradientMagnitude"])
+    # print('Printing gradient magnitude values')
+    # printImagePixelValues(parameters["gradientMagnitude"])
 
-    print('Printing gradient direction values')
-    printImagePixelValues(parameters["gradientDirection"])
+    # print('Printing gradient direction values')
+    # printImagePixelValues(parameters["gradientDirection"])
 
-    print('Printing non maximum suppression values')
-    printImagePixelValues(parameters["nms"])
+    # print('Printing non maximum suppression values')
+    # printImagePixelValues(parameters["nms"])
 
     # Save New Image
     inputImage.save("edge-detection.png")
