@@ -15,6 +15,18 @@ def sweeping(parameters):
             filterSelectorWrapper(row, column, parameters)
 
 
+def postSweeping(parameters):
+
+    if(parameters["filterType"] == "edgeDetection"):
+        print(f"Doing post processing on edge Detection")
+        nonMaximumSuppression(parameters)
+    
+
+
+
+
+
+
 def getKernelValues(parameters):
 
     # parse parameters
@@ -200,6 +212,22 @@ def keyNotInDict(dic, key):
     else:
         return True
 
+def nonMaximumSuppression(parameters):
+
+    # create a map of the  pixels and add it to the image parameters.
+    gradientMagnitudeMap = parameters["gradientMagnitude"]
+    gradientDirectionMap = parameters["gradientDirection"]
+
+    if(keyNotInDict(parameters, "nms")):
+        width, height = parameters["image"].size
+        parameters["nms"] = Image.new('F', (width, height))
+    nmsMap = parameters["nms"]
+
+
+
+    # check if the gradient magnitude at (r,c) is a local maximum.
+    
+
 
 def edgeDetection(row, column, parameters):
     # Radius of the filter.
@@ -212,24 +240,26 @@ def edgeDetection(row, column, parameters):
 
     # create a map of the f1 pixels and add it to the image parameters.
     if(keyNotInDict(parameters, "f1")):
-        parameters["f1"] = Image.new((width, height))
-        f1Map = parameters["f1"]
+        parameters["f1"] = Image.new('F', (width, height))
+    f1Map = parameters["f1"]
     
     # create a map of the f1 pixels and add it to the image parameters.
     if(keyNotInDict(parameters, "f2")):
-        parameters["f2"] = Image.new((width, height))
-        f2Map = parameters["f2"]
+        parameters["f2"] = Image.new('F', (width, height))
+    f2Map = parameters["f2"]
 
     # create a map of the gradient magnitude pixels and add it to the image parameters.
     if(keyNotInDict(parameters, "gradientMagnitude")):
-        parameters["gradientMagnitude"] = Image.new((width, height))
-        gradientMagnitudeMap = parameters["gradientMagnitude"]
+        # Map is initialized with a 32-bit floating point capbility.
+        parameters["gradientMagnitude"] = Image.new('F', (width, height))
+    gradientMagnitudeMap = parameters["gradientMagnitude"]
 
 
     # create a map of the gradient direction pixels and add it to the image parameters.
     if(keyNotInDict(parameters, "gradientDirection")):
-        parameters["gradientDirection"] = Image.new((width, height))
-        gradientMagnitudeMap = parameters["gradientDirection"]
+        # Map is initialized with a 32-bit floating point capbility.
+        parameters["gradientDirection"] = Image.new('F', (width, height))
+    gradientDirectionMap = parameters["gradientDirection"]
 
     # get the three columns left of this pixel
     # get the median from those three pixels
@@ -266,25 +296,32 @@ def edgeDetection(row, column, parameters):
     elif(lowerMedian == None):
         f2 = upperMedian
     else:
-        f2 = upperMedian - lowerMedian
+        f2 = (upperMedian - lowerMedian)
+        # print(f"f2 at ({row},{column}): {f2}")
 
     # generating the values of f2.
     f2Map.putpixel((column, row), f2)
 
+    # print(f2Map.getpixel((column, row)))
+
 
     # calculating gradient magnitude. Adding it to the pixel map of the gradient magnitude
     gradientMagnitude = math.sqrt((f2 * f2) + (f1 * f1))
+    # print(f"gradient magnitude at ({row},{column}): {gradientMagnitude}")
     gradientMagnitudeMap.putpixel((column, row), gradientMagnitude)
+    
 
 
 
     # calculating gradient diection. Adding it to the pixel map of the gradient magnitude
     gradientDirection = math.atan2(f2, f1)
     gradientDirectionDegrees = (180 / math.pi) * gradientDirection
-    gradientMagnitudeMap.putpixel((column, row), gradientDirectionDegrees)
+    gradientDirectionMap.putpixel((column, row), gradientDirectionDegrees)
 
-    if(gradientMagnitude > threshhold):
-        print(f"The gradient ({gradientMagnitude}) is bigger than the threshold ({threshhold}) at ({row},{column})")
+
+    
+
+    
 
 
 def filterSelectorWrapper(row, column, parameters):
@@ -307,14 +344,14 @@ def filterSelectorWrapper(row, column, parameters):
 # Prints the pixel values in an image.
 def printImagePixelValues(image):
 
-    rowArray = [309, 310, 311, 312, 313]
-    columnArray = [309, 310, 311, 312, 313]
+    rowArray = [359, 360, 361, 362, 363]
+    columnArray = [149, 150, 151, 152, 153]
 
     print("Image Pixel Coordinates")
 
     for row in rowArray:
         for column in columnArray:
-            print(f"[{column}, {row}]", end=" ")
+            print(f"[{column}, {row}]", end="\t")
         print("")
 
     print("\nImage Pixel Values:")
@@ -351,15 +388,32 @@ def main():
 
     # Conducts processing on the image.
     sweeping(parameters)
+    postSweeping(parameters)
+
+    
+    print('Printing f1 values')
+    printImagePixelValues(parameters["f1"])
+
+    print('Printing f2 values')
+    printImagePixelValues(parameters["f2"])
+
+    print('Printing gradient magnitude values')
+    printImagePixelValues(parameters["gradientMagnitude"])
+
+    print('Printing gradient direction values')
+    printImagePixelValues(parameters["gradientDirection"])
+
+    print('Printing non maximum suppression values')
+    printImagePixelValues(parameters["nms"])
 
     # Save New Image
     inputImage.save("edge-detection.png")
 
-    print("Coordinate Format: [Column, Row]")
 
     # Printing Image Pixel Values as well as a mean filter pixel values for comparison.
-    print("Printing rms filter pixel values (N=35):")
-    printImagePixelValues(inputImage)
+    # print("Coordinate Format: [Column, Row]")
+    # print("Printing rms filter pixel values (N=35):")
+    # printImagePixelValues(inputImage)
 
     # meanAverageBlurImage = originalImage.copy().filter(ImageFilter.BoxBlur(13))
     # print("Printing Mean Filter pixel values (N=13):")
