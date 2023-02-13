@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageFilter
 import math
 import statistics
 
@@ -18,8 +18,14 @@ def sweeping(parameters):
 def postSweeping(parameters):
 
     if(parameters["filterType"] == "edgeDetection"):
-        print(f"Doing post processing on edge Detection")
+        print(f"Edge Detection Post Processing")
+        # performing non maximum supression
         nonMaximumSuppression(parameters)
+        
+        # converting non maximum supression image into a black and white image.
+        parameters["output"] = parameters["nms"].copy()
+        nmsToEdge(parameters)
+
     
 
 
@@ -212,6 +218,25 @@ def keyNotInDict(dic, key):
     else:
         return True
 
+def nmsToEdge(parameters):
+    image = parameters["output"]
+    width, height = image.size
+
+    for row in range(height):
+        for column in range(width):
+            if(image.getpixel((column, row)) == 1):
+                image.putpixel((column, row), 255)
+
+def convertToDegrees(parameters):
+    image = parameters["gradientDirectionDegrees"]
+    width, height = image.size
+
+    for row in range(height):
+        for column in range(width):
+            value = image.getpixel((column, row)) * (180 / math.pi)
+            image.putpixel((column, row), value)
+
+
 def nonMaximumSuppression(parameters):
 
     # create a map of the  pixels and add it to the image parameters.
@@ -224,36 +249,101 @@ def nonMaximumSuppression(parameters):
     nmsMap = parameters["nms"]
 
 
+    PI = math.pi
+
+    
+
     for row in range(height):
         for column in range(width):
             magnitude = gradientMagnitudeMap.getpixel((column, row))
             direction = gradientDirectionMap.getpixel((column, row))
 
+            # set this point as the largest gradient value
+            magnitudeIsLargest = 1
+
+
+            # set the direction to 0 <= theta <= pi
             if direction < 0:
                 direction = direction + math.pi
 
+
+            ## These sets of if conditions each look at a direction within 45 degrees of each other
+            ## If the magnidute of the adjecent pixel is larger than the current set pixel in the center,
+            ## Then the magnitude of the pixel is not the largest and the pixel in the NMS map is set to 0
+            ## if the current pixel is the largest, then the pixel is set to 1.
             # direction is 0 < theta < 45
-            if direction < math.pi / 4:
-                condition = (row - 1 >= 1)
-                condition = condition and (column + 1 <= width)
-                condition = condition and math.tan(direction) * gradientMagnitudeMap.getpixel((column + 1, row - 1)) + (1 - math.tan(direction)) * gradientMagnitudeMap.getpixel((column + 1, row)) > magnitude
-                
-                if (condition):
 
-                    nmsMap.putpixel((column, row), 0)
+            # print(f"nmsMap.size: [{nmsMap.size}]")
+            # print(f"gradientMagnitude.size: [{gradientMagnitudeMap.size}]")
+            # print(f"gradientDirection.size: [{gradientDirectionMap.size}]")
+            # print(f"(Row, Column): [{row}, {column}] | (Height, Width): [{height}, {width}]")
 
-                condition = (row + 1 <= height)
-                condition = condition and (column - 1 >= 1)
-                condition = condition and math.tan(direction) * gradientMagnitudeMap.getpixel((column - 1, row + 1)) + (1 - math.tan(direction)) * gradientMagnitudeMap.getpixel((column - 1, row)) > magnitude
-                
-                if (condition):
 
-                    nmsMap.putpixel((column, row), 0)
+            if (direction < PI / 4):
+               
+                # Boundary check
+                if((row - 1 >= 0) and (column + 1 < width)):
+                    # Check for the largest magitude
+                    test = gradientDirectionMap.getpixel((column + 1, row - 1))
+                    test = gradientDirectionMap.getpixel((column + 1, row))
+
+                    if (math.tan(direction) * gradientMagnitudeMap.getpixel((column + 1, row - 1)) + (1 - math.tan(direction)) * gradientMagnitudeMap.getpixel((column + 1, row)) > magnitude):
+                        magnitudeIsLargest = 0
+
+                # Boundary check
+                if((row + 1 < height) and (column - 1 >= 0)):
+                    # Check if the magnitude is the largest
+                    if (math.tan(direction) * gradientMagnitudeMap.getpixel((column - 1, row + 1)) + (1 - math.tan(direction)) * gradientMagnitudeMap.getpixel((column - 1, row)) > magnitude):
+                        magnitudeIsLargest = 0
             
+
+            # if the direction 45 <= theta <= 90
+            elif ( (direction >= PI / 4) and (direction < PI / 2)):
+
+                # boundary check
+                if((row - 1 >= 0) and (column + 1 < width)):
+                    # compare for largest magnitude value.
+                    # cos(x) / sin(x) = cot(x)
+                    if((math.cos(direction) / math.sin(direction)) * gradientMagnitudeMap.getpixel((column + 1, row - 1)) + (1 - (math.cos(direction) / math.sin(direction))) * gradientMagnitudeMap.getpixel((column, row-1)) > magnitude):
+                        magnitudeIsLargest = 0
+
+                # boundary check
+                if((row + 1 < height) and (column - 1 >= 0)):
+                   if( (math.cos(direction) / math.sin(direction)) * gradientMagnitudeMap.getpixel((column - 1, row + 1)) + (1 - (math.cos(direction) / math.sin(direction))) * gradientMagnitudeMap.getpixel((column, row+1)) > magnitude):
+                        magnitudeIsLargest = 0
+
+            # if the direction 90 <= theta <= 135
+            elif ((direction >= PI / 2) and (direction < 3 * PI / 2)):
+
+                # boundary check
+                if((row - 1 >= 0) and (column - 1 >= 0)):
+                    # compare for largest magnitude value.
+                    if((-1 * (math.cos(direction) / math.sin(direction))) * gradientMagnitudeMap.getpixel((column - 1, row - 1)) + (1 + (math.cos(direction) / math.sin(direction))) * gradientMagnitudeMap.getpixel((column, row-1)) > magnitude):
+                        magnitudeIsLargest = 0
+
+                # boundary check
+                if((row + 1 < height) and (column + 1 < width)):
+                    if((-1 * (math.cos(direction) / math.sin(direction))) * gradientMagnitudeMap.getpixel((column + 1, row + 1)) + (1 + (math.cos(direction) / math.sin(direction))) * gradientMagnitudeMap.getpixel((column, row+1)) > magnitude):
+                        magnitudeIsLargest = 0
+
+            # if the direction 135 <= theta <= 180
+            elif ((direction >= 3 * PI / 2)):
+
+                # boundary check
+                if((row - 1 >= 0) and (column - 1 >= 0)):
+                    # compare for largest magnitude value.
+                    if((-1 * math.tan(direction)) * gradientMagnitudeMap.getpixel((column - 1, row - 1)) + (1 + math.tan(direction)) * gradientMagnitudeMap.getpixel((column-1, row)) > magnitude):
+                        magnitudeIsLargest = 0
+
+                # boundary check
+                if((row + 1 < height) and (column + 1 < width)):
+                    if((-1 * math.tan(direction)) * gradientMagnitudeMap.getpixel((column + 1, row + 1)) + (1 + math.tan(direction)) * gradientMagnitudeMap.getpixel((column+1, row)) > magnitude):
+                        magnitudeIsLargest = 0
+
+            # Setting the pixel value of the nms map, it is still 1 if the value is the largest out of the pixels next to it.
+            # The value is going to either be 1 or zero.
+            nmsMap.putpixel((column, row), magnitudeIsLargest)
             
-
-
-            # print(f"[{row}, {column}]: {gradientDirectionMap.getpixel((column, row))}")
 
 
 
@@ -340,8 +430,14 @@ def edgeDetection(row, column, parameters):
     # calculating gradient magnitude. Adding it to the pixel map of the gradient magnitude
     gradientMagnitude = math.sqrt((f2 * f2) + (f1 * f1))
     # print(f"gradient magnitude at ({row},{column}): {gradientMagnitude}")
-    gradientMagnitudeMap.putpixel((column, row), gradientMagnitude)
-    
+
+
+    if(gradientMagnitude > threshhold):
+        gradientMagnitudeMap.putpixel((column, row), gradientMagnitude)
+    else:
+        gradientMagnitudeMap.putpixel((column, row), 0)
+
+
 
 
 
@@ -377,27 +473,29 @@ def filterSelectorWrapper(row, column, parameters):
         edgeDetection(row, column, parameters)
 
 
-# Prints the pixel values in an image.
-def printImagePixelValues(image):
+def printCoordinateSystem(rowArray, columnArray):
 
-    rowArray = [359, 360, 361, 362, 363]
-    columnArray = [149, 150, 151, 152, 153]
 
-    print("Image Pixel Coordinates")
+    # print("Image Pixel Coordinates")
 
     for row in rowArray:
         for column in columnArray:
             print(f"[{column}, {row}]", end="\t")
         print("")
 
-    print("\nImage Pixel Values:")
+
+# Prints the pixel values in an image.
+def printImagePixelValues(image, rowArray, columnArray):
+
+
+    # print("Image Pixel Values:")
 
     for row in rowArray:
         for column in columnArray:
 
             # Get Current Pixel Value
-            pixelValue = image.getpixel((column, row))
-            print(pixelValue, end=" ")
+            pixelValue = round(image.getpixel((column, row)), 2)
+            print(pixelValue, end="\t")
 
         print("")
 
@@ -410,40 +508,78 @@ def printImagePixelValues(image):
 def main():
 
     # Open image using PIL
-    originalImage = Image.open("cman.png")
+    imageFileName = "cman.png"
+    originalImage = Image.open(imageFileName)
+    print(f"Image opened: [{imageFileName}]")
 
     # Create input image buffer
     inputImage = originalImage.copy()
+    print(f"Image copy created as buffer.")
 
     # Setting up to call edge detection with a threshold of 35.
     filterType = "edgeDetection"
-
     filterSize = 35
-
     parameters = {"image": inputImage, "filterType": filterType, "filterN": filterSize}
+    print(f"Image parameters set: [{parameters}]")
+
+
 
     # Conducts processing on the image.
+    print(f"Beginning Initial Image Processing")
     sweeping(parameters)
+    print(f"Completed Initial Image Processing")
+
+    print(f"Initializing post processing")
     postSweeping(parameters)
+    print(f"Completed post processing")
 
     
-    # print('Printing f1 values')
-    # printImagePixelValues(parameters["f1"])
 
-    # print('Printing f2 values')
-    # printImagePixelValues(parameters["f2"])
+    
 
-    # print('Printing gradient magnitude values')
-    # printImagePixelValues(parameters["gradientMagnitude"])
 
-    # print('Printing gradient direction values')
-    # printImagePixelValues(parameters["gradientDirection"])
 
-    # print('Printing non maximum suppression values')
-    # printImagePixelValues(parameters["nms"])
+    # These are the pixels that are being graded.
+    rowArray = [359, 360, 361, 362, 363]
+    columnArray = [149, 150, 151, 152, 153]
+
+    print('\nPrinting Coordinate System')
+    printCoordinateSystem(rowArray, columnArray)
+
+    print('\nPrinting f1 values')
+    printImagePixelValues(parameters["f1"], rowArray, columnArray)
+
+    print('\nPrinting f2 values')
+    printImagePixelValues(parameters["f2"],rowArray, columnArray)
+
+    print('\nPrinting gradient magnitude values')
+    printImagePixelValues(parameters["gradientMagnitude"], rowArray, columnArray)
+
+
+    print('\nPrinting gradient direction values')
+    # converting gradient direction values to degrees.
+    parameters["gradientDirectionDegrees"] = parameters["gradientDirection"].copy()
+    convertToDegrees(parameters)
+    # printing values.
+    printImagePixelValues(parameters["gradientDirectionDegrees"], rowArray, columnArray)
+
+    print('\nPrinting non maximum suppression values')
+    printImagePixelValues(parameters["nms"], rowArray, columnArray)
+
+
+    print('\nPrinting output pixels')
+    printImagePixelValues(parameters["output"], rowArray, columnArray)
+    
+
+
+
 
     # Save New Image
-    inputImage.save("edge-detection.png")
+    newImageFileName = "edge-detection.png"
+    print(f"Saving new name: [newImageFileName: {newImageFileName}]")
+    parameters["output"].save(newImageFileName)
+
+
 
 
     # Printing Image Pixel Values as well as a mean filter pixel values for comparison.
