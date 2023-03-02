@@ -1,11 +1,11 @@
-# RMS Filter
-This is an image filtering script for a grayscale image of a camera man.
+# Hough Transform
 
-the `rmsfilter.py` file is a self contained module that runs the code necessary for the homework assignment.
+This project implements a hough transform on an image while applying padding, edge detetion, and trying to detect lines in an image. You can change the thresholds for the hough array.
 
-Future plans include making the script more organized by improving the CLI and adding more modularity in the main function.
 
-# Edge Detection
-This implementation uses the rms edge dection method.
 
-CLI will try to be improved.
+
+
+
+
+
