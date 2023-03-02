@@ -575,7 +575,7 @@ def main():
 
 
     # Save New Image
-    newImageFileName = "edge-detection.png"
+    newImageFileName = "edge-detection-no-nms.png"
     print(f"Saving new name: [newImageFileName: {newImageFileName}]")
     parameters["output"].save(newImageFileName)
 
