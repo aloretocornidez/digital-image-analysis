@@ -1,5 +1,5 @@
 #include <opencv2/opencv.hpp>
-#include <iostream>
+// #include <iostream>
 
 int main(int argc, char** argv)
 {
@@ -14,7 +14,7 @@ int main(int argc, char** argv)
   return -1;
  }
 
- cv::String windowName = "The Guitar"; //Name of the window
+ cv::String windowName = "Address"; //Name of the window
 
  cv::namedWindow(windowName); // Create a window
 

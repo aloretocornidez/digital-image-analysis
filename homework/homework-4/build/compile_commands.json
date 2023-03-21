@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-4/build",
+  "command": "/usr/bin/g++  -isystem /usr/include/opencv4 -g -std=gnu++11 -o CMakeFiles/opencv.dir/src/main.cpp.o -c /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-4/src/main.cpp",
+  "file": "/home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-4/src/main.cpp",
+  "output": "CMakeFiles/opencv.dir/src/main.cpp.o"
+}
+]
