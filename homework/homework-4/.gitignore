@@ -34,3 +34,6 @@
 # Cmake and Make Files
 **.cmake
 **/Makefile
+**.make
+**/CMakeFiles/
+**/.vscode/
