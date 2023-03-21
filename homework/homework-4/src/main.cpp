@@ -37,30 +37,27 @@ int main(int argc, char **argv)
       // int value2 = buffer.at<cv::Vec3b>(row, column)[1]; // green
       // int value3 = buffer.at<cv::Vec3b>(row, column)[2]; // red
 
+      if (pixelValue < 100)
+      {
+        output.at<cv::Vec3b>(row, column)[0] = 255; // blue
+      }
+      else
+      {
+        output.at<cv::Vec3b>(row, column)[0] = 0;
+      }
 
-      if(pixelValue)
-
-
-      std::cout << "(Row, Column): (" << row << "," << column << ")"
-                << "\nPixel Value: " << pixelValue << std::endl; //", " << value2 << ", " << value3 << std::endl;
-
-      buffer.at<cv::Vec3b>(row, column)[0] = 200; // blue
+      // std::cout << "(Row, Column): (" << row << "," << column << ")" << "\nPixel Value: " << pixelValue << std::endl;
     }
   }
 
-  cv::imwrite("test.png", buffer);
+  cv::imwrite("test.png", output);
 
-  cv::imshow("Testing Image", cv::imread("test.png"));
-  cv::waitKey(0);
+  cv::Mat image = cv::imread("test.png");
+  openWindow("Threshold Address", &image);
 
   // Opening the image for viewing.
   cv::String windowName = "Address"; // Name of the window
-  openWindow(windowName, &inputImage);
-
-  // cv::namedWindow(windowName); // Create a window
-  // cv::imshow(windowName, image); // Show our image inside the created window.
-  // cv::waitKey(0); // Wait for any keystroke in the window
-  // cv::destroyWindow(windowName); // destroy the created window
+  openWindow("Address Original", &inputImage);
 
   return 0;
 }
