@@ -37,3 +37,4 @@
 **.make
 **/CMakeFiles/
 **/.vscode/
+CMakeCache.txt
