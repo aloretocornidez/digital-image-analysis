@@ -33,8 +33,7 @@ int main(int argc, char **argv)
   Mat buffer = inputImage.clone();
   Mat output = inputImage.clone();
 
-  // Running kittler's method to best threshold.
-  // This method assumes an 8-bit image.
+  // Running kittler's method to best threshold. This method assumes an 8-bit image.
   double maxSigma = 0;
 
   // Get the number of row and column pixels
