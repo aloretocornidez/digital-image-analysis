@@ -30,26 +30,69 @@ int main(int argc, char **argv)
   Mat buffer = inputImage.clone();
   Mat output = inputImage.clone();
 
-  // Running otsu's method to best threshold (with the largest invariance.)
+  // Running kittler's method to best threshold.
+  // This method assumes an 8-bit image.
   double maxSigma = 0;
   int bestTheshold = -1;
 
-  // Test each sigma value.
+  // Get the number of row and column pixels
+  int rows = buffer.rows;
+  int columns = buffer.cols;
+
+  // A histogram of the pixel values in the pixels in the image.
+  int pixelValueHistogram[256];
+
+  double probabilityDistribution[256];
+
+  // Total number of pixels in the image.
+  int totalImagePixels = rows * columns;
+
+  // Populate the pixel value histogram and probability histogram.
+  for (int i = 0; i < 256; i++)
+  {
+    // Scan the entire image.
+    for (int row = 0; row < buffer.rows; row++)
+    {
+      for (int column = 0; column < buffer.cols; column++)
+      {
+
+        // Get the value of the pixel at that coordinate.
+        int pixelValue = buffer.at<Vec3b>(row, column)[0];
+
+        // Atomic add the value of the pixel.
+        if (pixelValue == i)
+        {
+          pixelValueHistogram[i]++;
+        }
+      }
+    }
+    // Populating the probability distribution histogram after all of the pixels are counted.
+    probabilityDistribution[i] = pixelValueHistogram[i] / totalImagePixels * 1.0;
+  }
+
+  // Test each different threshold value.
   for (int currentThreshold = 0; currentThreshold < 256; currentThreshold++)
   {
     std::cout << "Testing New Threshold: " << currentThreshold << std::endl;
 
-    // Parameters used in otsu's method for each new threshold.
+    // Calculating q1 for the specified theshold.
+    double q1 = 0;
+    // This gets the sum of all of the pixels that are below the specified threshold.
+    for (int i = 0; i < currentThreshold; i++)
+    {
+      q1 = q1 + probabilityDistribution[i];
+    }
+
+
+    // This is the second value for Kittler's and Illingworth's method.
+    double q2 = 1 - q1;
+
+    // TODO THIS IS WHERE i HAVE LEFT OFF.
+
+    /*
+    // Parameters used in kittler method for each new threshold.
     double currentSigma = 0;
     int pixelsAboveThreshold = 0;
-
-    // Get the number of row and column pixels
-    int rows = buffer.rows;
-    int columns = buffer.cols;
-
-    // Total number of pixels in the image.
-    int totalImagePixels = rows * columns;
-
     // Scan each row and column and calculate the value.
     for (int row = 0; row < rows; row++)
     {
@@ -59,24 +102,26 @@ int main(int argc, char **argv)
 
         if (pixelValue < currentThreshold)
         {
-          output.at<Vec3b>(row, column)[0] = 255; // blue
+          // Do nothing for now.
         }
         else
         {
-          output.at<Vec3b>(row, column)[0] = 0;
+          pixelsAboveThreshold++;
         }
       }
     }
 
     // Calculate the current sigma value.
-    
 
-    // Found the best threshold.
+        // Found the best threshold.
     if (currentSigma > maxSigma)
     {
       maxSigma = currentSigma;
       bestTheshold = currentThreshold;
+
+      std::cout << "New Best Threshdol and sigma found: " << maxSigma << " & " << bestTheshold << std::endl;
     }
+    */
   }
 
   // Use the best threshold to run binarization of the image.
