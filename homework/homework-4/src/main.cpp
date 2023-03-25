@@ -9,6 +9,7 @@ void calculateJValues(int currentThreshold, double *probabilityDistribution, dou
 void printArrayValues(int *pixelValueHistogram, double *probabilityDistribution, double *jValues);
 void findMinimumJValue(int &bestThreshold, double *jValues);
 void binarizeImage(Mat &output, int threshold);
+void removeFileExtension(String &imageName);
 void openWindow(String windowName, Mat *image);
 
 int main(int argc, char **argv)
@@ -57,7 +58,7 @@ int main(int argc, char **argv)
                      jValues);
   }
 
-  printArrayValues(pixelValueHistogram, probabilityDistribution, jValues);
+  // printArrayValues(pixelValueHistogram, probabilityDistribution, jValues);
 
   // Find the best threshold using the jValues.
   int bestThreshold = 0;
@@ -66,12 +67,16 @@ int main(int argc, char **argv)
   // Use the best threshold to run binarization of the image.
   binarizeImage(output, bestThreshold);
 
-  // Save the best image.
-  imwrite("test.png", output);
+  // Save the binarized image.
+  String imageName = argv[1];
+  removeFileExtension(imageName);
+  imageName.append("-binarized.png");
 
-  // Opening the saved image.
-  Mat image = imread("test.png");
-  openWindow("Threshold Address", &image);
+  imwrite(imageName, output);
+
+  // // Opening the saved image.
+  // Mat image = imread("test.png");
+  // openWindow("Threshold Address", &image);
 
   // Opening the original image for viewing.
   // String windowName = "Address"; // Name of the window
@@ -121,13 +126,13 @@ void populateDistributionArray(double *probabilityDistribution, int *pixelValueH
   }
 }
 
-void calculateJValues(int currentThreshold, double *probabilityDistribution, double &q1, double &q2, double &mu1, double &mu2, double &sigmaSquared1, double &sigmaSquared2, double *jValues)
+void calculateJValues(int threshold, double *probabilityDistribution, double &q1, double &q2, double &mu1, double &mu2, double &sigmaSquared1, double &sigmaSquared2, double *jValues)
 {
 
   // Calculating q1 for the specified theshold.
   q1 = 0;
   // This gets the sum of all of the pixels that are below the specified threshold.
-  for (int i = 0; i < currentThreshold; i++)
+  for (int i = 0; i < threshold; i++)
   {
     q1 += probabilityDistribution[i];
   }
@@ -139,12 +144,12 @@ void calculateJValues(int currentThreshold, double *probabilityDistribution, dou
   mu1 = 0;
   mu2 = 0;
 
-  for (int i = 0; i < currentThreshold; i++)
+  for (int i = 0; i < threshold; i++)
   {
     mu1 += ((double)i * (probabilityDistribution[i] / q1));
   }
 
-  for (int i = currentThreshold + 1; i < 256; i++)
+  for (int i = threshold + 1; i < 256; i++)
   {
     mu2 += ((double)i * (probabilityDistribution[i] / q2));
   }
@@ -158,15 +163,15 @@ void calculateJValues(int currentThreshold, double *probabilityDistribution, dou
   sigmaSquared2 = 0;
 
   // Calculating sigmaSquared1
-  for (int i = 0; i < currentThreshold; i++)
+  for (int i = 0; i < threshold; i++)
   {
-    sigmaSquared1 = sigmaSquared1 + ((i - mu1) * (i - mu1) * probabilityDistribution[i] / q1);
+    sigmaSquared1 += ((i - mu1) * (i - mu1) * probabilityDistribution[i] / q1);
   }
 
   // Calculating sigmaSquared2
-  for (int i = currentThreshold + 1; i < 256; i++)
+  for (int i = threshold + 1; i < 256; i++)
   {
-    sigmaSquared2 = sigmaSquared2 + ((i - mu2) * (i - mu2) * probabilityDistribution[i] / q2);
+    sigmaSquared2 += ((i - mu2) * (i - mu2) * probabilityDistribution[i] / q2);
   }
 
   double sigma1 = sqrt(sigmaSquared1);
@@ -175,7 +180,7 @@ void calculateJValues(int currentThreshold, double *probabilityDistribution, dou
   // std::cout << "sigma1: " << sigma1 << " sigma2: " << sigma2 << std::endl;
 
   // jValues[currentThreshold] = -q1 * std::log10(q1) - q2 * std::log10(q2) + q1 * std::log10(sigma1) + q2 * std::log10(sigma2);
-  jValues[currentThreshold] = ((-1 * q1) * std::log(q1)) - (q2 * std::log(q2)) + (q1 * std::log(sigma1)) + (q2 * std::log(sigma2));
+  jValues[threshold] = 0 - (q1 * std::log(q1)) - (q2 * std::log(q2)) + (q1 * std::log(sigma1)) + (q2 * std::log(sigma2));
 }
 
 void printArrayValues(int *pixelValueHistogram, double *probabilityDistribution, double *jValues)
@@ -206,7 +211,6 @@ void findMinimumJValue(int &minimumJValueIndex, double *jValues)
   double bestJValue = std::numeric_limits<double>::max();
 
   // Check each possible j value to find the smallest jValue.
-
   for (int i = 0; i < 256; i++)
   {
     double currentJValue = jValues[i];
@@ -215,9 +219,11 @@ void findMinimumJValue(int &minimumJValueIndex, double *jValues)
     if (
         // Check if the value is not a number.
         !isnan(currentJValue) &&
+
         // Check if the value not +-infinity.
         !std::isinf(currentJValue) &&
-        // Check if the value is the new minimum. 
+
+        // Check if the value is the new minimum.
         currentJValue < bestJValue)
     {
       // std::cout << "Updating best j value from (" << bestJValue << ") to (" << bestJValue << ") At index: " << i << std::endl;
@@ -249,6 +255,12 @@ void binarizeImage(Mat &output, int threshold)
       }
     }
   }
+}
+
+void removeFileExtension(String &imageName)
+{
+  size_t last = imageName.find_last_of(".");
+  imageName = imageName.substr(0, last);
 }
 
 void openWindow(String windowName, Mat *image)
