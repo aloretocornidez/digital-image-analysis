@@ -3,9 +3,11 @@
 
 using namespace cv;
 
-void calculateJValues(int currentThreshold, double *probabilityDistribution, double &q1, double &q2, double &mu1, double &mu2, double &sigmaSquared1, double &sigmaSquared2, double *jValues);
 void populateHistogram(Mat &inputImage, int *pixelValueHistogram, double *probabilityDistribution);
+void populateDistributionArray(double *probabilityDistribution, int *pixelValueHistogram, int totalImagePixels);
+void calculateJValues(int currentThreshold, double *probabilityDistribution, double &q1, double &q2, double &mu1, double &mu2, double &sigmaSquared1, double &sigmaSquared2, double *jValues);
 void printArrayValues(int *pixelValueHistogram, double *probabilityDistribution, double *jValues);
+void findMinimumJValue(int &bestThreshold, double *jValues);
 void binarizeImage(Mat &output, int threshold);
 void openWindow(String windowName, Mat *image);
 
@@ -29,26 +31,19 @@ int main(int argc, char **argv)
     return -1;
   }
 
-  // Creating an image buffer.
-  Mat buffer = inputImage.clone();
   Mat output = inputImage.clone();
-
-  // Running kittler's method to best threshold. This method assumes an 8-bit image.
-  double maxSigma = 0;
-
-  // Get the number of row and column pixels
-  int rows = buffer.rows;
-  int columns = buffer.cols;
 
   // A histogram of the pixel values in the pixels in the image.
   int pixelValueHistogram[256];
   double probabilityDistribution[256];
   double jValues[256];
 
-  // Total number of pixels in the image.
-  int totalImagePixels = rows * columns;
-
+  // Populating the grayscale histogram and creating the
   populateHistogram(inputImage, pixelValueHistogram, probabilityDistribution);
+
+  // Populating the probability distribution array.
+  int totalImagePixels = inputImage.rows * inputImage.cols;
+  populateDistributionArray(probabilityDistribution, pixelValueHistogram, totalImagePixels);
 
   // Test each different threshold value and calculate the values.
   double q1, q2, mu1, mu2, sigmaSquared1, sigmaSquared2;
@@ -65,27 +60,11 @@ int main(int argc, char **argv)
   printArrayValues(pixelValueHistogram, probabilityDistribution, jValues);
 
   // Find the best threshold using the jValues.
-  int bestTheshold = 0;
-  double bestJValue = std::numeric_limits<double>::max();
-
-  for (int i = 0; i < 256; i++)
-  {
-    double currentJValue = jValues[i];
-
-    if (isnan(currentJValue))
-    {
-    }
-    else if (currentJValue < bestJValue)
-    {
-      bestTheshold = i;
-    }
-  }
-
-  // std::cout << "Best Threshold: " << bestTheshold << std::endl;
-  // std::cout << "Best J Value: " << bestJValue << std::endl;
+  int bestThreshold = 0;
+  findMinimumJValue(bestThreshold, jValues);
 
   // Use the best threshold to run binarization of the image.
-  binarizeImage(output, bestTheshold);
+  binarizeImage(output, bestThreshold);
 
   // Save the best image.
   imwrite("test.png", output);
@@ -94,30 +73,67 @@ int main(int argc, char **argv)
   Mat image = imread("test.png");
   openWindow("Threshold Address", &image);
 
-  // // Opening the original image for viewing.
+  // Opening the original image for viewing.
   // String windowName = "Address"; // Name of the window
   // openWindow("Address Original", &inputImage);
 
   return 0;
 }
 
+void populateHistogram(Mat &inputImage, int *pixelValueHistogram, double *probabilityDistribution)
+{
+  int rows = inputImage.rows;
+  int columns = inputImage.cols;
+  int totalImagePixels = rows * columns;
+
+  // Populate the pixel value histogram and probability histogram.
+  // Initialize the histogram to zeros.
+  for (int i = 0; i < 256; i++)
+  {
+    pixelValueHistogram[i] = 0;
+  }
+
+  // Scan the entire image and populate the pixel values.
+  for (int row = 0; row < rows; row++)
+  {
+    for (int column = 0; column < columns; column++)
+    {
+
+      // Get the value of the pixel at that coordinate.
+      int pixelValue = inputImage.at<uint8_t>(row, column);
+
+      // Incrementing the value of the number of pixels that match the current threshold.
+      pixelValueHistogram[pixelValue]++;
+    }
+  }
+}
+
+void populateDistributionArray(double *probabilityDistribution, int *pixelValueHistogram, int totalImagePixels)
+{
+
+  // Populate the pixel value histogram and probability histogram.
+  for (int i = 0; i < 256; i++)
+  {
+    // Populating the probability distribution histogram after all of the pixels are counted.
+    probabilityDistribution[i] = (double)pixelValueHistogram[i] / (double)totalImagePixels;
+
+    // std::cout << "Pixel Value Histogram at " << i << ": " << pixelValueHistogram[i] << std::endl;
+  }
+}
+
 void calculateJValues(int currentThreshold, double *probabilityDistribution, double &q1, double &q2, double &mu1, double &mu2, double &sigmaSquared1, double &sigmaSquared2, double *jValues)
 {
-  // std::cout << "Testing New Threshold: " << currentThreshold << std::endl;
 
   // Calculating q1 for the specified theshold.
   q1 = 0;
   // This gets the sum of all of the pixels that are below the specified threshold.
   for (int i = 0; i < currentThreshold; i++)
   {
-    q1 = q1 + probabilityDistribution[i];
+    q1 += probabilityDistribution[i];
   }
 
   // This is the second value for Kittler's and Illingworth's method.
   q2 = 1 - q1;
-
-  // Printing the qu values.
-  // std::cout << "q1: " << q1 << " q2: " << q2 << std::endl;
 
   // Calculate the new mu values. THey are initialized to zero because we know that q1 and q2 are positive.
   mu1 = 0;
@@ -125,11 +141,12 @@ void calculateJValues(int currentThreshold, double *probabilityDistribution, dou
 
   for (int i = 0; i < currentThreshold; i++)
   {
-    mu1 += (i * probabilityDistribution[i] / q1);
+    mu1 += ((double)i * (probabilityDistribution[i] / q1));
   }
+
   for (int i = currentThreshold + 1; i < 256; i++)
   {
-    mu2 += (i * probabilityDistribution[i] / q2);
+    mu2 += ((double)i * (probabilityDistribution[i] / q2));
   }
 
   // TODO: Figure out the edge case whenever q1 or q2 are equal to 1 and zero.
@@ -143,13 +160,13 @@ void calculateJValues(int currentThreshold, double *probabilityDistribution, dou
   // Calculating sigmaSquared1
   for (int i = 0; i < currentThreshold; i++)
   {
-    sigmaSquared1 = sigmaSquared1 + ((1 - mu1) * (1 - mu1) * probabilityDistribution[i] / q1);
+    sigmaSquared1 = sigmaSquared1 + ((i - mu1) * (i - mu1) * probabilityDistribution[i] / q1);
   }
 
   // Calculating sigmaSquared2
   for (int i = currentThreshold + 1; i < 256; i++)
   {
-    sigmaSquared2 = sigmaSquared2 + ((1 - mu2) * (1 - mu2) * probabilityDistribution[i] / q2);
+    sigmaSquared2 = sigmaSquared2 + ((i - mu2) * (i - mu2) * probabilityDistribution[i] / q2);
   }
 
   double sigma1 = sqrt(sigmaSquared1);
@@ -157,61 +174,63 @@ void calculateJValues(int currentThreshold, double *probabilityDistribution, dou
 
   // std::cout << "sigma1: " << sigma1 << " sigma2: " << sigma2 << std::endl;
 
-  jValues[currentThreshold] = -q1 * log10(q1) - q2 * log10(q2) + q1 * log10(sigma1) + q2 * log10(sigma2);
-}
-
-void populateHistogram(Mat &inputImage, int *pixelValueHistogram, double *probabilityDistribution)
-{
-  int rows = inputImage.rows;
-  int columns = inputImage.cols;
-  int totalImagePixels = rows * columns;
-
-  // Populate the pixel value histogram and probability histogram.
-  for (int i = 0; i < 256; i++)
-  {
-    pixelValueHistogram[i] = 0;
-    int temp = 0;
-
-    // Scan the entire image.
-    for (int row = 0; row < rows; row++)
-    {
-      for (int column = 0; column < columns; column++)
-      {
-
-        // Get the value of the pixel at that coordinate.
-        int pixelValue = inputImage.at<uint8_t>(row, column);
-
-        // Atomic add the value of the pixel.
-
-        if (pixelValue == i)
-        {
-          temp++;
-          // std::cout << pixelValue << " " << temp << std::endl;
-        }
-      }
-    }
-
-    // Setting the value of the number of pixels that match the current threshold.
-    pixelValueHistogram[i] = temp;
-
-    // Populating the probability distribution histogram after all of the pixels are counted.
-    probabilityDistribution[i] = (double)pixelValueHistogram[i] / (double)totalImagePixels;
-
-    // std::cout << "Pixel Value Histogram at " << i << ": " << pixelValueHistogram[i] << std::endl;
-  }
+  // jValues[currentThreshold] = -q1 * std::log10(q1) - q2 * std::log10(q2) + q1 * std::log10(sigma1) + q2 * std::log10(sigma2);
+  jValues[currentThreshold] = ((-1 * q1) * std::log(q1)) - (q2 * std::log(q2)) + (q1 * std::log(sigma1)) + (q2 * std::log(sigma2));
 }
 
 void printArrayValues(int *pixelValueHistogram, double *probabilityDistribution, double *jValues)
 {
   // PRINTING ALL OF THE ARRAY VALUES
+  // std::cout << "Printing Arrays: i pixelHistogram probabilityDistribution jValues " << std::endl;
   for (int i = 0; i < 256; i++)
   {
-    std::cout << " Printing Array: i pixelHistogram probabilityDistribution jValues " << i << " " << pixelValueHistogram[i] << " " << probabilityDistribution[i] << " " << jValues[i] << std::endl;
+    std::cout << i << " " << pixelValueHistogram[i] << " " << probabilityDistribution[i] << " " << jValues[i] << std::endl;
+  }
+  // for (int i = 0; i < 256; i++)
+  // {
+  //   std::cout << i << " " << pixelValueHistogram[i] << std::endl;
+  // }
+  // for (int i = 0; i < 256; i++)
+  // {
+  //   std::cout << i << " " << probabilityDistribution[i] << std::endl;
+  // }
+  // for (int i = 0; i < 256; i++)
+  // {
+  //   std::cout << i << " " << jValues[i] << std::endl;
+  // }
+}
+
+void findMinimumJValue(int &minimumJValueIndex, double *jValues)
+{
+  // Set the best value to the largest value possible.
+  double bestJValue = std::numeric_limits<double>::max();
+
+  // Check each possible j value to find the smallest jValue.
+
+  for (int i = 0; i < 256; i++)
+  {
+    double currentJValue = jValues[i];
+
+    // Find the minimum J value.
+    if (
+        // Check if the value is not a number.
+        !isnan(currentJValue) &&
+        // Check if the value not +-infinity.
+        !std::isinf(currentJValue) &&
+        // Check if the value is the new minimum. 
+        currentJValue < bestJValue)
+    {
+      // std::cout << "Updating best j value from (" << bestJValue << ") to (" << bestJValue << ") At index: " << i << std::endl;
+      bestJValue = currentJValue;
+      minimumJValueIndex = i;
+    }
   }
 }
 
 void binarizeImage(Mat &output, int threshold)
 {
+
+  std::cout << "Binarizing Image with threshold: " << threshold << std::endl;
 
   // Use the best threshold to run binarization of the image.
   for (int row = 0; row < output.rows; row++)
@@ -243,43 +262,3 @@ void openWindow(String windowName, Mat *image)
 
   destroyWindow(windowName); // destroy the created window
 }
-
-/*
-void populateHistogram(double *pixelValueHistogram, double* probabilityDistribution, int rows, int columns, cv::Mat* inputImage)
-{
-
-  // Populate the pixel value histogram and probability histogram.
-  for (int i = 0; i < 256; i++)
-  {
-    pixelValueHistogram[i] = 0;
-    int temp = 0;
-
-    // Scan the entire image.
-    for (int row = 0; row < rows; row++)
-    {
-      for (int column = 0; column < columns; column++)
-      {
-
-        // Get the value of the pixel at that coordinate.
-        int pixelValue = inputImage.at<Vec3b>(row, column)[0];
-
-        // Atomic add the value of the pixel.
-
-        if (pixelValue == i)
-        {
-          temp++;
-          // std::cout << pixelValue << " " << temp << std::endl;
-        }
-      }
-    }
-
-    // Setting the value of the number of pixels that match the current threshold.
-    pixelValueHistogram[i] = temp;
-
-    // Populating the probability distribution histogram after all of the pixels are counted.
-    probabilityDistribution[i] = (double)pixelValueHistogram[i] / (double)totalImagePixels;
-
-    // std::cout << "Pixel Value Histogram at " << i << ": " << pixelValueHistogram[i] << std::endl;
-  }
-}
-*/
