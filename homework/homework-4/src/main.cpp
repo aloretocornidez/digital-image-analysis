@@ -1,4 +1,3 @@
-// #include "functions.hpp"
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
@@ -236,7 +235,7 @@ void findMinimumJValue(int &minimumJValueIndex, double *jValues)
 void binarizeImage(Mat &output, int threshold)
 {
 
-  std::cout << "Binarizing Image with threshold: " << threshold << std::endl;
+  std::cout << "Binarizing Image with threshold found in Kittler's Algorithm: " << threshold << std::endl;
 
   // Use the best threshold to run binarization of the image.
   for (int row = 0; row < output.rows; row++)
