@@ -1,9 +1,43 @@
 #include <opencv2/opencv.hpp>
 #include "functions.hpp"
+#include <memory>
 
 using namespace cv;
 
+struct Matrix
+{
 
+  int rows, columns;
+  uint64_t *matrix;
+
+  Matrix(int rows, int columns) : rows(rows), columns(columns)
+  {
+    // This approach uses a single array since "new" cannot create
+    // multidimensional arrays.
+    // It also spares the performance cost of an array of arrays.
+    matrix = new uint64_t[columns * rows];
+  }
+
+  ~Matrix()
+  {
+    // Release the memory after destroying the Matrix-object
+    delete[] matrix;
+  }
+
+  /*Access the element at position [r]ow and [c]olumn.*/
+  int getElement(int r, int c)
+  {
+    // matrix[c][r] is rewritten as matrix[column + columns * rows]
+    // -> matrix <=> Single memory block
+    return matrix[c + columns * r];
+  }
+
+  /*Set the element at position [r]ow and [c]olumn with given [val]ue.*/
+  void setElement(int r, int c, int val)
+  {
+    matrix[c + columns * r] = val;
+  }
+};
 
 int main(int argc, char **argv)
 {
@@ -15,61 +49,83 @@ int main(int argc, char **argv)
     return -1;
   }
 
-  // // Read the image file
-  // Mat inputImage = imread(argv[1], IMREAD_GRAYSCALE);
+  // Read the image file
+  Mat inputImage = imread(argv[1], IMREAD_GRAYSCALE);
 
-  // // Check for failure when opening the image.
-  // if (inputImage.empty())
-  // {
-  //   std::cout << "Could not open or find the image" << std::endl;
-  //   return -1;
-  // }
+  // Check for failure when opening the image.
+  if (inputImage.empty())
+  {
+    std::cout << "Could not open or find the image" << std::endl;
+    return -1;
+  }
 
-  // Mat output = inputImage.clone();
+  // Creating Output image to keep the input image as a buffer.
+  Mat L = inputImage.clone();
 
-  // // A histogram of the pixel values in the pixels in the image.
-  // int pixelValueHistogram[256];
-  // double probabilityDistribution[256];
-  // double jValues[256];
+  L.convertTo(L, CV_64F);
 
-  // // Populating the grayscale histogram and creating the
-  // populateHistogram(inputImage, pixelValueHistogram, probabilityDistribution);
+  // Initialize the Labels in the image.
+  uint64_t nextLabel = 1;
 
-  // // Populating the probability distribution array.
-  // int totalImagePixels = inputImage.rows * inputImage.cols;
-  // populateDistributionArray(probabilityDistribution, pixelValueHistogram, totalImagePixels);
+  for (int row = 0; row < inputImage.rows; row++)
+  {
+    for (int column = 0; column < inputImage.cols; column++)
+    {
+      // If pixel is a foreground pixel.
+      if (inputImage.at<uint64_t>(row, column) > 0)
+      {
+        L.at<uint64_t>(row, column) = nextLabel;
+        nextLabel++;
+      }
+      else
+      {
+        L.at<uint64_t>(row, column) = 0;
+      }
+    }
+  }
 
-  // // Test each different threshold value and calculate the values.
-  // double q1, q2, mu1, mu2, sigmaSquared1, sigmaSquared2;
-  // for (int currentThreshold = 0; currentThreshold < 256; currentThreshold++)
-  // {
+  bool change = false;
 
-  //   calculateJValues(currentThreshold, probabilityDistribution,
-  //                    q1, q2,
-  //                    mu1, mu2,
-  //                    sigmaSquared1, sigmaSquared2,
-  //                    jValues);
-  // }
+  // iteratively update the labels.
+  do
+  {
+    // Top-down scan
+    for (int row = 0; row < inputImage.cols; row++)
+    {
+      for (int column = 0; column < inputImage.cols; column++)
+      {
+        if (L.at<uint64_t>(row, column) != 0)
+        {
+          std::cout << "Top-down found: (" << row << "," << column << ")" << std::endl;
+        }
+      }
+    }
 
-  // // printArrayValues(pixelValueHistogram, probabilityDistribution, jValues);
+    // Bottom-up scan
+    for (int row = 0; row < inputImage.cols; row++)
+    {
+      for (int column = 0; column < inputImage.cols; column++)
+      {
+        if (L.at<uint64_t>(row, column) != 0)
+        {
+          std::cout << "Bottom Up found: (" << row << "," << column << ")" << std::endl;
+        }
+      }
+    }
+    change = true;
 
-  // // Find the best threshold using the jValues.
-  // int bestThreshold = 0;
-  // findMinimumJValue(bestThreshold, jValues);
+  } while (change == false);
 
-  // // Use the best threshold to run binarization of the image.
-  // binarizeImage(output, bestThreshold);
+  // Save the binarized image.
+  String imageName = argv[1];
+  removeFileExtension(imageName);
+  imageName.append("-haralick.png");
 
-  // // Save the binarized image.
-  // String imageName = argv[1];
-  // removeFileExtension(imageName);
-  // imageName.append("-binarized.png");
+  imwrite(imageName, L);
 
-  // imwrite(imageName, output);
-
-  // // // Opening the saved image.
-  // // Mat image = imread("test.png");
-  // // openWindow("Threshold Address", &image);
+  // Opening the saved image.
+  // Mat image = imread("test.png");
+  // openWindow("Threshold Address", &image);
 
   // // Opening the original image for viewing.
   // // String windowName = "Address"; // Name of the window
