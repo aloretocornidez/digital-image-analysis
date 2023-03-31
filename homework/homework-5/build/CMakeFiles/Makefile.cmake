@@ -7,9 +7,9 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 # The top level Makefile was generated from the following files:
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
+  "/home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/CMakeLists.txt"
   "CMakeFiles/3.26.2/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.26.2/CMakeSystem.cmake"
-  "CMakeLists.txt"
   "/usr/lib/cmake/opencv4/OpenCVConfig-version.cmake"
   "/usr/lib/cmake/opencv4/OpenCVConfig.cmake"
   "/usr/lib/cmake/opencv4/OpenCVModules-release.cmake"

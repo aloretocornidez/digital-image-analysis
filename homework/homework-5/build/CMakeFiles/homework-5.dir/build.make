@@ -56,7 +56,7 @@ EQUALS = =
 CMAKE_SOURCE_DIR = /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5
+CMAKE_BINARY_DIR = /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/homework-5.dir/depend.make
@@ -70,32 +70,32 @@ include CMakeFiles/homework-5.dir/progress.make
 include CMakeFiles/homework-5.dir/flags.make
 
 CMakeFiles/homework-5.dir/src/main.cpp.o: CMakeFiles/homework-5.dir/flags.make
-CMakeFiles/homework-5.dir/src/main.cpp.o: src/main.cpp
+CMakeFiles/homework-5.dir/src/main.cpp.o: /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/src/main.cpp
 CMakeFiles/homework-5.dir/src/main.cpp.o: CMakeFiles/homework-5.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/homework-5.dir/src/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/homework-5.dir/src/main.cpp.o -MF CMakeFiles/homework-5.dir/src/main.cpp.o.d -o CMakeFiles/homework-5.dir/src/main.cpp.o -c /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/src/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/homework-5.dir/src/main.cpp.o"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/homework-5.dir/src/main.cpp.o -MF CMakeFiles/homework-5.dir/src/main.cpp.o.d -o CMakeFiles/homework-5.dir/src/main.cpp.o -c /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/src/main.cpp
 
 CMakeFiles/homework-5.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/homework-5.dir/src/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/src/main.cpp > CMakeFiles/homework-5.dir/src/main.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/src/main.cpp > CMakeFiles/homework-5.dir/src/main.cpp.i
 
 CMakeFiles/homework-5.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/homework-5.dir/src/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/src/main.cpp -o CMakeFiles/homework-5.dir/src/main.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/src/main.cpp -o CMakeFiles/homework-5.dir/src/main.cpp.s
 
 CMakeFiles/homework-5.dir/src/functions.cpp.o: CMakeFiles/homework-5.dir/flags.make
-CMakeFiles/homework-5.dir/src/functions.cpp.o: src/functions.cpp
+CMakeFiles/homework-5.dir/src/functions.cpp.o: /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/src/functions.cpp
 CMakeFiles/homework-5.dir/src/functions.cpp.o: CMakeFiles/homework-5.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/homework-5.dir/src/functions.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/homework-5.dir/src/functions.cpp.o -MF CMakeFiles/homework-5.dir/src/functions.cpp.o.d -o CMakeFiles/homework-5.dir/src/functions.cpp.o -c /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/src/functions.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/homework-5.dir/src/functions.cpp.o"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/homework-5.dir/src/functions.cpp.o -MF CMakeFiles/homework-5.dir/src/functions.cpp.o.d -o CMakeFiles/homework-5.dir/src/functions.cpp.o -c /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/src/functions.cpp
 
 CMakeFiles/homework-5.dir/src/functions.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/homework-5.dir/src/functions.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/src/functions.cpp > CMakeFiles/homework-5.dir/src/functions.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/src/functions.cpp > CMakeFiles/homework-5.dir/src/functions.cpp.i
 
 CMakeFiles/homework-5.dir/src/functions.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/homework-5.dir/src/functions.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/src/functions.cpp -o CMakeFiles/homework-5.dir/src/functions.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/src/functions.cpp -o CMakeFiles/homework-5.dir/src/functions.cpp.s
 
 # Object files for target homework-5
 homework__5_OBJECTS = \
@@ -166,7 +166,7 @@ homework-5: /usr/lib/libopencv_photo.so.4.7.0
 homework-5: /usr/lib/libopencv_imgproc.so.4.7.0
 homework-5: /usr/lib/libopencv_core.so.4.7.0
 homework-5: CMakeFiles/homework-5.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable homework-5"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable homework-5"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/homework-5.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -178,6 +178,6 @@ CMakeFiles/homework-5.dir/clean:
 .PHONY : CMakeFiles/homework-5.dir/clean
 
 CMakeFiles/homework-5.dir/depend:
-	cd /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5 && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5 /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5 /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5 /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5 /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/CMakeFiles/homework-5.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5 /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5 /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/build /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/build /home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/build/CMakeFiles/homework-5.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/homework-5.dir/depend
 

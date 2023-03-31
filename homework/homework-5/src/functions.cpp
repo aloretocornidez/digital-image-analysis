@@ -1,11 +1,9 @@
 #include "functions.hpp"
 
-
 void populateHistogram(Mat &inputImage, int *pixelValueHistogram, double *probabilityDistribution)
 {
   int rows = inputImage.rows;
   int columns = inputImage.cols;
-  int totalImagePixels = rows * columns;
 
   // Populate the pixel value histogram and probability histogram.
   // Initialize the histogram to zeros.
@@ -189,4 +187,109 @@ void openWindow(String windowName, Mat *image)
   waitKey(0); // Wait for any keystroke in the window
 
   destroyWindow(windowName); // destroy the created window
+}
+
+void initializeLabels(Mat &inputImage)
+{
+  // Set up the first label.
+  uint64_t nextLabel = 1;
+
+  for (int row = 0; row < inputImage.rows; row++)
+  {
+    for (int column = 0; column < inputImage.cols; column++)
+    {
+      // If pixel is a foreground pixel, initialize a label
+      if (inputImage.at<uint64_t>(row, column) > 0)
+      {
+        inputImage.at<uint64_t>(row, column) = nextLabel;
+        nextLabel++;
+      }
+      else
+      {
+        // Makes sure there are no negative pixels in the image.
+        inputImage.at<uint64_t>(row, column) = 0;
+      }
+    }
+  }
+}
+
+void updateLabels(Mat &inputImage)
+{
+  // Iteratively update the labels.
+  bool change;
+  do
+  {
+    change = false;
+
+    // Top-down scan
+    for (int row = 0; row < inputImage.cols; row++)
+    {
+      for (int column = 0; column < inputImage.cols; column++)
+      {
+
+        // if the pixel is not a forground pixel, find the minimum value of the pixels surrounding this pixel and set them all to the minimum value.
+        int pixelValue = inputImage.at<uint64_t>(row, column);
+        if (pixelValue != 0)
+        {
+          int miniumPixelValue = findMinimumPixel(inputImage, row, column);
+
+          if (pixelValue != miniumPixelValue)
+          {
+            inputImage.at<uint64_t>(row, column) = miniumPixelValue;
+          }
+
+          int pixel = inputImage.at<uint64_t>(row, column);
+          std::cout << "Bottom Up found: (" << row << "," << column << ") --> " << pixel << std::endl;
+        }
+      }
+    }
+
+    // Bottom-up scan
+    for (int row = 0; row < inputImage.cols; row++)
+    {
+      for (int column = 0; column < inputImage.cols; column++)
+      {
+        if (inputImage.at<uint64_t>(row, column) != 0)
+        {
+          // std::cout << "Bottom Up found: (" << row << "," << column << ")" << std::endl;
+        }
+      }
+    }
+    change = true;
+
+  } while (change == false);
+}
+
+int findMinimumPixel(Mat &inputImage, int row, int column)
+{
+  int currentMinimumPixel = inputImage.at<uint64_t>(row, column);
+
+  // Looking at all adjecent pixels.
+  // i shall be used for rows.
+  for (int i = -1; i <= 1; i++)
+  {
+
+    // j shall be used for columns.
+    for (int j = -1; j <= 1; j++)
+    {
+      // If the pixel is within the image.
+
+      if (isValidPixel(inputImage, i, j, row, column))
+      {
+        int testPixel = inputImage.at<uint64_t>(row, column);
+
+        if (testPixel < currentMinimumPixel)
+        {
+          currentMinimumPixel = testPixel;
+        }
+      }
+    }
+  }
+
+  return currentMinimumPixel;
+}
+bool isValidPixel(Mat &inputImage, int i, int j, int row, int column)
+{
+
+  return row - i >= 0 && row + i < inputImage.rows && column - j >= 0 && column + j < inputImage.cols;
 }

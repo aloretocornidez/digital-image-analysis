@@ -3,7 +3,7 @@
 
 # Relative path conversion top directories.
 set(CMAKE_RELATIVE_PATH_TOP_SOURCE "/home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5")
-set(CMAKE_RELATIVE_PATH_TOP_BINARY "/home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5")
+set(CMAKE_RELATIVE_PATH_TOP_BINARY "/home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/build")
 
 # Force unix paths in dependencies.
 set(CMAKE_FORCE_UNIX_PATHS 1)

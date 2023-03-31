@@ -65,56 +65,10 @@ int main(int argc, char **argv)
   L.convertTo(L, CV_64F);
 
   // Initialize the Labels in the image.
-  uint64_t nextLabel = 1;
+  initializeLabels(L);
 
-  for (int row = 0; row < inputImage.rows; row++)
-  {
-    for (int column = 0; column < inputImage.cols; column++)
-    {
-      // If pixel is a foreground pixel.
-      if (inputImage.at<uint64_t>(row, column) > 0)
-      {
-        L.at<uint64_t>(row, column) = nextLabel;
-        nextLabel++;
-      }
-      else
-      {
-        L.at<uint64_t>(row, column) = 0;
-      }
-    }
-  }
 
-  bool change = false;
-
-  // iteratively update the labels.
-  do
-  {
-    // Top-down scan
-    for (int row = 0; row < inputImage.cols; row++)
-    {
-      for (int column = 0; column < inputImage.cols; column++)
-      {
-        if (L.at<uint64_t>(row, column) != 0)
-        {
-          std::cout << "Top-down found: (" << row << "," << column << ")" << std::endl;
-        }
-      }
-    }
-
-    // Bottom-up scan
-    for (int row = 0; row < inputImage.cols; row++)
-    {
-      for (int column = 0; column < inputImage.cols; column++)
-      {
-        if (L.at<uint64_t>(row, column) != 0)
-        {
-          std::cout << "Bottom Up found: (" << row << "," << column << ")" << std::endl;
-        }
-      }
-    }
-    change = true;
-
-  } while (change == false);
+  updateLabels(L);
 
   // Save the binarized image.
   String imageName = argv[1];
