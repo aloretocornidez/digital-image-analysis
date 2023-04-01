@@ -14,6 +14,8 @@ void binarizeImage(Mat &output, int threshold);
 void removeFileExtension(String &imageName);
 void openWindow(String windowName, Mat *image);
 
+
+
 /*
 Homework 5 Functions
 
@@ -22,12 +24,23 @@ Homework 5 Functions
 // Sets all forground pixels to a label value in an incremental method.
 void initializeLabels(Mat &input);
 
+
+
 // Isolates all labels and creates unique objects that are present.
 void updateLabels(Mat &input);
 
+// Conducts the scan of the image to check for all surrounding pixels.
+void scanImage(Mat &inputImage, int row, int column, bool &imageUpdated);
+
+
 // Checks all surrounding pixels and sets them to the minimum value.
-int findMinimumPixel(Mat &inputImage, int row, int column);
+uint64_t findMinimumPixel(Mat &inputImage, int row, int column);
 
 bool isValidPixel(Mat &inputImage, int i, int j, int row, int column);
+
+// Set the pixels to chronological objects.
+void updateLabels(Mat& inputImage);
+
+void processLabels(Mat& inputImage);
 
 #endif

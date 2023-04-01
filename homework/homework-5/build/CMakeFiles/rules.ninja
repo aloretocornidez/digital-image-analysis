@@ -42,7 +42,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /usr/bin/cmake --regenerate-during-build -S/home/alan-manuel/Downloads/school/532-digital-image-analysis/homework/homework-5 -B/home/alan-manuel/Downloads/school/532-digital-image-analysis/homework/homework-5/build
+  command = /usr/bin/cmake --regenerate-during-build -S/home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5 -B/home/alan-manuel/Downloads/532-digital-image-analysis/homework/homework-5/build
   description = Re-running CMake...
   generator = 1
 

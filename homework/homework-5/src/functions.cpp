@@ -216,53 +216,83 @@ void initializeLabels(Mat &inputImage)
 void updateLabels(Mat &inputImage)
 {
   // Iteratively update the labels.
-  bool change;
+  bool imageUpdated;
   do
   {
-    change = false;
+    // Set this variale to check if any changes have been made to the image.
+    imageUpdated = false;
 
     // Top-down scan
+    bool topDownUpdate = false;
     for (int row = 0; row < inputImage.cols; row++)
     {
       for (int column = 0; column < inputImage.cols; column++)
       {
 
-        // if the pixel is not a forground pixel, find the minimum value of the pixels surrounding this pixel and set them all to the minimum value.
-        int pixelValue = inputImage.at<uint64_t>(row, column);
-        if (pixelValue != 0)
-        {
-          int miniumPixelValue = findMinimumPixel(inputImage, row, column);
-
-          if (pixelValue != miniumPixelValue)
-          {
-            inputImage.at<uint64_t>(row, column) = miniumPixelValue;
-          }
-
-          int pixel = inputImage.at<uint64_t>(row, column);
-          std::cout << "Bottom Up found: (" << row << "," << column << ") --> " << pixel << std::endl;
-        }
+        scanImage(inputImage, row, column, topDownUpdate);
+        // if (topDownUpdate)
+        // {
+        //   // std::cout << "Image was updated in the top-down scan." << std::endl;
+        // }
       }
     }
 
     // Bottom-up scan
-    for (int row = 0; row < inputImage.cols; row++)
+    bool bottomUpUpdate = false;
+    for (int row = inputImage.rows; row < 0; row--)
     {
-      for (int column = 0; column < inputImage.cols; column++)
+      for (int column = inputImage.cols; column < 0; column--)
       {
-        if (inputImage.at<uint64_t>(row, column) != 0)
-        {
-          // std::cout << "Bottom Up found: (" << row << "," << column << ")" << std::endl;
-        }
+        scanImage(inputImage, row, column, bottomUpUpdate);
+        // if (bottomUpUpdate)
+        // {
+        //   std::cout << "Image was updated in the bottom-up scan." << std::endl;
+        // }
       }
     }
-    change = true;
 
-  } while (change == false);
+    imageUpdated = topDownUpdate || bottomUpUpdate;
+
+  }
+  // If the image has been updated in this iteration, then you continue looping until there are no updates to the image.
+  while (imageUpdated == true);
 }
 
-int findMinimumPixel(Mat &inputImage, int row, int column)
+void scanImage(Mat &inputImage, int row, int column, bool &imageUpdated)
 {
-  int currentMinimumPixel = inputImage.at<uint64_t>(row, column);
+  // if the pixel is not a forground pixel, find the minimum value of the pixels surrounding this pixel and set them all to the minimum value.
+  uint64_t pixelValue = inputImage.at<uint64_t>(row, column);
+  if (pixelValue != 0)
+  {
+    // std::cout << "Found a non border pixel at (" << row << "," << column << "): " << pixelValue << std::endl;
+
+    // Find the minimum pixel value within the current pixel's range.
+
+    uint64_t miniumPixelValue = findMinimumPixel(inputImage, row, column);
+    // std::cout << "Minimum Pixel Value found in vicinity: " << miniumPixelValue << std::endl;
+
+    if (pixelValue != miniumPixelValue)
+    {
+      // std::cout << "New minimum pixel found: " << miniumPixelValue << "\nUpdating pixel value from : " << pixelValue << std::endl;
+
+      imageUpdated = true;
+      inputImage.at<uint64_t>(row, column) = miniumPixelValue;
+
+      // This was used to check if the value of the minimum pixel value was correctly assigned
+      if ((uint64_t)miniumPixelValue != inputImage.at<uint64_t>(row, column))
+      {
+        std::cout << "Value of pixel in image after assignment: " << inputImage.at<uint64_t>(row, column) << "\n" << std::endl;
+      }
+    }
+
+    // int pixel = inputImage.at<uint64_t>(row, column);
+    // std::cout << "Bottom Up found: (" << row << "," << column << ") --> " << pixel << std::endl;
+  }
+}
+
+uint64_t findMinimumPixel(Mat &inputImage, int row, int column)
+{
+  uint64_t currentMinimumPixel = inputImage.at<uint64_t>(row, column);
 
   // Looking at all adjecent pixels.
   // i shall be used for rows.
@@ -272,24 +302,47 @@ int findMinimumPixel(Mat &inputImage, int row, int column)
     // j shall be used for columns.
     for (int j = -1; j <= 1; j++)
     {
-      // If the pixel is within the image.
 
+      // If the pixel is within the image.
       if (isValidPixel(inputImage, i, j, row, column))
       {
-        int testPixel = inputImage.at<uint64_t>(row, column);
+        // Set test pixel to compare to current minimum.
+        uint64_t testPixel = inputImage.at<uint64_t>(row + i, column + j);
 
-        if (testPixel < currentMinimumPixel)
+        // std::cout << "Pixels that are being compared | TestPixel: "<< testPixel << " | Current Minimum: "<< currentMinimumPixel << std::endl;
+
+        // Set the new minumum pixel.
+        if (testPixel < currentMinimumPixel && testPixel != 0)
         {
+
           currentMinimumPixel = testPixel;
         }
       }
     }
   }
-
   return currentMinimumPixel;
 }
+
+// Checks to make sure that the coordinates that are being accessed are valid coordinates.
 bool isValidPixel(Mat &inputImage, int i, int j, int row, int column)
 {
+  return row + i >= 0 && row + i < inputImage.rows && column + j >= 0 && column + j < inputImage.cols;
+}
 
-  return row - i >= 0 && row + i < inputImage.rows && column - j >= 0 && column + j < inputImage.cols;
+void processLabels(Mat &inputImage)
+{
+  // std::cout << "Processing Labels." << std::endl;
+
+  // Scan the image and fill a vector with each unique label.
+  for (int row = 0; row < inputImage.rows; row++)
+  {
+    for (int column = 0; column < inputImage.cols; column++)
+    {
+      
+      if (inputImage.at<uint64_t>(row, column) != 0)
+      {
+        std::cout << "(" << row << "," << column << "): " << inputImage.at<uint64_t>(row, column) << std::endl;
+      }
+    }
+  }
 }

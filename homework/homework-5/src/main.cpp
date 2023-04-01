@@ -68,7 +68,16 @@ int main(int argc, char **argv)
   initializeLabels(L);
 
 
+  // Update Labels
   updateLabels(L);
+
+  processLabels(L);
+
+  L.convertTo(L, CV_16F);
+
+
+
+  
 
   // Save the binarized image.
   String imageName = argv[1];
