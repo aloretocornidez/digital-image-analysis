@@ -45,7 +45,6 @@ int main(int argc, char **argv)
   int rows = inputImage.rows;
   int columns = inputImage.cols;
 
-
   int totalImagePixels = inputImage.rows * inputImage.cols;
   populateDistributionArray(probabilityDistribution, pixelValueHistogram, totalImagePixels);
 
@@ -139,6 +138,8 @@ void calculateJValues(int threshold, double *probabilityDistribution, double &q1
   {
     q1 += probabilityDistribution[i];
   }
+
+  // std::cout << "q1 found: " << q1 << std::endl;
 
   // This is the second value for Kittler's and Illingworth's method.
   q2 = 1 - q1;
