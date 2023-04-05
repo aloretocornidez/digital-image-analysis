@@ -4,40 +4,6 @@
 
 using namespace cv;
 
-struct Matrix
-{
-
-  int rows, columns;
-  uint64_t *matrix;
-
-  Matrix(int rows, int columns) : rows(rows), columns(columns)
-  {
-    // This approach uses a single array since "new" cannot create
-    // multidimensional arrays.
-    // It also spares the performance cost of an array of arrays.
-    matrix = new uint64_t[columns * rows];
-  }
-
-  ~Matrix()
-  {
-    // Release the memory after destroying the Matrix-object
-    delete[] matrix;
-  }
-
-  /*Access the element at position [r]ow and [c]olumn.*/
-  int getElement(int r, int c)
-  {
-    // matrix[c][r] is rewritten as matrix[column + columns * rows]
-    // -> matrix <=> Single memory block
-    return matrix[c + columns * r];
-  }
-
-  /*Set the element at position [r]ow and [c]olumn with given [val]ue.*/
-  void setElement(int r, int c, int val)
-  {
-    matrix[c + columns * r] = val;
-  }
-};
 
 int main(int argc, char **argv)
 {
@@ -62,7 +28,6 @@ int main(int argc, char **argv)
   // Creating Output image to keep the input image as a buffer.
   Mat L = inputImage.clone();
 
-  L.convertTo(L, CV_64F);
 
   // Initialize the Labels in the image.
   initializeLabels(L);
@@ -71,9 +36,9 @@ int main(int argc, char **argv)
   // Update Labels
   updateLabels(L);
 
-  processLabels(L);
+  // processLabels(L);
 
-  L.convertTo(L, CV_16F);
+  // L.convertTo(L, CV_16F);
 
 
 
