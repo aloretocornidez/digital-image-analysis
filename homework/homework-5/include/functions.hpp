@@ -1,5 +1,5 @@
-#ifndef FUNCTIONS_H
-#define FUNCTIONS_H
+#ifndef __FUNCTIONS_H__
+#define __FUNCTIONS_H__
 
 #include <opencv2/opencv.hpp>
 using namespace cv;
@@ -41,6 +41,9 @@ bool isValidPixel(Mat &inputImage, int i, int j, int row, int column);
 // Set the pixels to chronological objects.
 void updateLabels(Mat& inputImage);
 
-void processLabels(Mat& inputImage);
+void printImage(Mat& inputImage);
+
+void printArrayValues(int* array);
+
 
 #endif

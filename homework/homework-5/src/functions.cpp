@@ -223,35 +223,26 @@ void updateLabels(Mat &inputImage)
     imageUpdated = false;
 
     // Top-down scan
-    bool topDownUpdate = false;
     for (int row = 0; row < inputImage.cols; row++)
     {
       for (int column = 0; column < inputImage.cols; column++)
       {
 
-        scanImage(inputImage, row, column, topDownUpdate);
-        // if (topDownUpdate)
-        // {
-        //   // std::cout << "Image was updated in the top-down scan." << std::endl;
-        // }
+        scanImage(inputImage, row, column, imageUpdated);
+
       }
     }
 
     // Bottom-up scan
-    bool bottomUpUpdate = false;
     for (int row = inputImage.rows; row < 0; row--)
     {
       for (int column = inputImage.cols; column < 0; column--)
       {
-        scanImage(inputImage, row, column, bottomUpUpdate);
-        // if (bottomUpUpdate)
-        // {
-        //   std::cout << "Image was updated in the bottom-up scan." << std::endl;
-        // }
+        scanImage(inputImage, row, column, imageUpdated);
+
       }
     }
 
-    imageUpdated = topDownUpdate || bottomUpUpdate;
 
   }
   // If the image has been updated in this iteration, then you continue looping until there are no updates to the image.
@@ -329,7 +320,7 @@ bool isValidPixel(Mat &inputImage, int i, int j, int row, int column)
   return row + i >= 0 && row + i < inputImage.rows && column + j >= 0 && column + j < inputImage.cols;
 }
 
-void processLabels(Mat &inputImage)
+void printImage(Mat &inputImage)
 {
   // std::cout << "Processing Labels." << std::endl;
 
@@ -339,10 +330,12 @@ void processLabels(Mat &inputImage)
     for (int column = 0; column < inputImage.cols; column++)
     {
       
-      if (inputImage.at<uint64_t>(row, column) != 0)
+      // if (inputImage.at<uint64_t>(row, column) != 0)
+      
       {
         std::cout << "(" << row << "," << column << "): " << inputImage.at<uint64_t>(row, column) << std::endl;
       }
     }
   }
 }
+

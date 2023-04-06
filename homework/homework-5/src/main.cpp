@@ -1,12 +1,9 @@
-#include <opencv2/opencv.hpp>
 #include "functions.hpp"
-#include <memory>
-
-using namespace cv;
-
+#include <opencv2/opencv.hpp>
 
 int main(int argc, char **argv)
 {
+  using namespace cv;
 
   // Usage for the program
   if (argc != 2)
@@ -28,7 +25,6 @@ int main(int argc, char **argv)
   // Creating Output image to keep the input image as a buffer.
   Mat L = inputImage.clone();
 
-
   // Initialize the Labels in the image.
   initializeLabels(L);
 
@@ -36,19 +32,14 @@ int main(int argc, char **argv)
   // Update Labels
   updateLabels(L);
 
-  // processLabels(L);
-
-  // L.convertTo(L, CV_16F);
-
-
-
-  
+  L.convertTo(L, CV_16F);
 
   // Save the binarized image.
   String imageName = argv[1];
   removeFileExtension(imageName);
   imageName.append("-haralick.png");
 
+  std::cout << "New File Name: " << imageName << std::endl;
   imwrite(imageName, L);
 
   // Opening the saved image.

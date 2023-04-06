@@ -1,0 +1,9 @@
+After spending the time to endlessly debug the code one day after it has been counted as late, I have been unable make my implementation fully work.
+
+
+There are multiple reasons for why this is happening. Currently my algorithms are properly running the steps to avoid any invalid memory accesses. 
+However, the issues in my code lie in the fact that the image is being read with 3 8-bit channels. 8 Bits to represent an integer can only display values of up to 255.
+As I am using the Mat data type from the opencv library, I am able to read the values and assign them correctly. However, ther are overflows occuring which lead to random numbers that appear in the image pixel value array.
+This can be fixed by writing to an output array instead of the image pixel values themselves, however, this will take quite a bit of time to refactor.
+
+I currently feel that it is better to cut my losses and submit the code that I have instead of trying to fix it and take a late penalty.
