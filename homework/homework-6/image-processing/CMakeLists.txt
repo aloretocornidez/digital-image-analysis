@@ -4,13 +4,14 @@ set(PROJECT_NAME "image-processing")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project(${PROJECT_NAME} LANGUAGES CXX)
+project(${PROJECT_NAME})
 
 
 
 
 add_subdirectory(dilation)
 add_subdirectory(erosion)
+
 
 
 

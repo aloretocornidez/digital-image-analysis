@@ -21,16 +21,16 @@ PUBLIC ${PROJECT_SOURCE_DIR}/include)
 # add_executable(${PROJECT_NAME} ${SOURCES})
 
 
-# # This includes the header files that I make.
-# target_include_directories(${PROJECT_NAME}
-#     PRIVATE
-#     ${PROJECT_SOURCE_DIR}/include
-# )
+# This includes the header files that I make.
+target_include_directories(${PROJECT_NAME}
+    PRIVATE
+    ${PROJECT_SOURCE_DIR}/include
+)
 
-# # This includes the opencv headerfiles.
-# find_package( OpenCV REQUIRED )
-# # include_directories( ${OpenCV_INCLUDE_DIRS}/src )
-# include_directories(${OpenCV_INCLUDE_DIRS})
-# target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
+# This includes the opencv headerfiles.
+find_package( OpenCV REQUIRED )
+# include_directories( ${OpenCV_INCLUDE_DIRS}/src )
+include_directories(${OpenCV_INCLUDE_DIRS})
+target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
 
 

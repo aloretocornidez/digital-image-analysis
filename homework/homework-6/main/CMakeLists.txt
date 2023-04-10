@@ -15,25 +15,29 @@ set(SOURCES
 
 )
 
+
+# Creating the executable
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-################    OPENCV INCLUSION    ################
 # This includes the header files that I make.
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/../image-processing/
 )
 
+# Includes the directores of the libraries that I make.
+target_link_libraries(${PROJECT_NAME}
+    sub::dilation
+    sub::erosion
+
+)
+
+
+
+
+################    OPENCV INCLUSION    ################
 # This includes the opencv headerfiles.
 find_package( OpenCV REQUIRED )
 # include_directories( ${OpenCV_INCLUDE_DIRS}/src )
 include_directories(${OpenCV_INCLUDE_DIRS})
 target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
-################    OPENCV INCLUSION    ################
-
-
-target_link_libraries(${PROJECT_NAME}
-
-
-)
-
+################    END OPENCV INCLUSION    ################
