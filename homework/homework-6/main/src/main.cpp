@@ -12,6 +12,8 @@ int main(int argc, char **argv)
     return -1;
   }
 
+  std::cout << "Running Homework 6 Driver with input file: " << argv[1] << std::endl;
+
   // Read the image file
   Mat inputImage = imread(argv[1], IMREAD_GRAYSCALE);
 
@@ -23,7 +25,9 @@ int main(int argc, char **argv)
   }
 
   // Creating Output image to keep the input image as a buffer.
-  Mat L = inputImage.clone();
+  Mat inputBuffer = inputImage.clone();
+
+  
 
 
   return 0;
