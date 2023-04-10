@@ -11,12 +11,6 @@ public:
     void printHello();
 };
 
-dilation::dilation()
-{
-}
 
-dilation::~dilation()
-{
-}
 
 #endif

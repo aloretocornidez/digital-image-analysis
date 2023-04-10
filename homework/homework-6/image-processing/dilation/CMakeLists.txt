@@ -16,7 +16,8 @@ add_library(${PROJECT_NAME}
 add_library(sub::dilation ALIAS ${PROJECT_NAME})
 
 target_include_directories( ${PROJECT_NAME}
-PUBLIC ${PROJECT_SOURCE_DIR}/include)
+    PUBLIC ${PROJECT_SOURCE_DIR}/include
+)
 
 # add_executable(${PROJECT_NAME} ${SOURCES})
 
