@@ -1,9 +1,12 @@
 #include "homework-6.hpp"
+#include "image-processing/erosion/erosion.hpp"
+// #include "image-processing/dilation/dilation.hpp"
+
 #include <opencv2/opencv.hpp>
 
 int main(int argc, char **argv)
 {
-  using namespace cv;
+  erosion
 
   // Usage for the program
   if (argc != 2)
@@ -15,7 +18,7 @@ int main(int argc, char **argv)
   std::cout << "Running Homework 6 Driver with input file: " << argv[1] << std::endl;
 
   // Read the image file
-  Mat inputImage = imread(argv[1], IMREAD_GRAYSCALE);
+  cv::Mat inputImage = imread(argv[1], cv::IMREAD_GRAYSCALE);
 
   // Check for failure when opening the image.
   if (inputImage.empty())
@@ -25,7 +28,7 @@ int main(int argc, char **argv)
   }
 
   // Creating Output image to keep the input image as a buffer.
-  Mat inputBuffer = inputImage.clone();
+  cv::Mat inputBuffer = inputImage.clone();
 
   
 

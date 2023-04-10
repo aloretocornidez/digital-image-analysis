@@ -10,19 +10,27 @@ set(SOURCES
 
 )
 
-add_executable(${PROJECT_NAME} ${SOURCES})
-
-
-# This includes the header files that I make.
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-    ${PROJECT_SOURCE_DIR}/include
+add_library(${PROJECT_NAME}
+    src/dilation.cpp
 )
+add_library(sub::dilation ALIAS ${PROJECT_NAME})
 
-# This includes the opencv headerfiles.
-find_package( OpenCV REQUIRED )
-# include_directories( ${OpenCV_INCLUDE_DIRS}/src )
-include_directories(${OpenCV_INCLUDE_DIRS})
-target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
+target_include_directories( ${PROJECT_NAME}
+PUBLIC ${PROJECT_SOURCE_DIR}/include)
+
+# add_executable(${PROJECT_NAME} ${SOURCES})
+
+
+# # This includes the header files that I make.
+# target_include_directories(${PROJECT_NAME}
+#     PRIVATE
+#     ${PROJECT_SOURCE_DIR}/include
+# )
+
+# # This includes the opencv headerfiles.
+# find_package( OpenCV REQUIRED )
+# # include_directories( ${OpenCV_INCLUDE_DIRS}/src )
+# include_directories(${OpenCV_INCLUDE_DIRS})
+# target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
 
 
