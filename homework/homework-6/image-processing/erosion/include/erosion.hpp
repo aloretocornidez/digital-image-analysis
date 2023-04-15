@@ -2,6 +2,7 @@
 #define __EROSION_H__
 
 #include <iostream>
+#include <opencv2/opencv.hpp>
 
 class erosion
 {
@@ -10,10 +11,14 @@ public:
     erosion();
     ~erosion();
 
-
+    // Print Function to test class/namespace.
     void printHello();
+
+    // Erosion Process
+    static void erodeImage(cv::Mat &input, cv::Mat &output);
+
+    // Open CV Erode Image
+    static void openCVErodeImage(cv::Mat &input, cv::Mat &output);
 };
-
-
 
 #endif
