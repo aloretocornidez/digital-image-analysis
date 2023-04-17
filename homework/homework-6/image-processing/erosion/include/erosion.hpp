@@ -15,7 +15,7 @@ public:
     void printHello();
 
     // Erosion Process
-    static void erodeImage(cv::Mat &input, cv::Mat &output);
+    static void erodeImage(cv::Mat &input, cv::Mat &output, int kernelSize);
 
     // Open CV Erode Image
     static void openCVErodeImage(cv::Mat &input, cv::Mat &output);

@@ -12,7 +12,7 @@ public:
 
     void printHello();
 
-    static void dilateImage(cv::Mat &input, cv::Mat &output);
+    static void dilateImage(cv::Mat &input, cv::Mat &output, int kernelSize);
 
     static void openCVDilateImage(cv::Mat &input, cv::Mat &output);
 };

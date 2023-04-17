@@ -21,7 +21,7 @@ void dilation::printHello()
   std::cout << "Dilation says hello." << std::endl;
 }
 
-void dilation::dilateImage(Mat &input, Mat &output)
+void dilation::dilateImage(Mat &input, Mat &output, int kernelSize)
 {
   std::cout << "Dilating Image using Personal Implementation" << std::endl;
 
@@ -38,7 +38,6 @@ void dilation::dilateImage(Mat &input, Mat &output)
       {
 
         // Perform dilation.
-        int kernelSize = 11;
         for (int i = -kernelSize / 2; i < kernelSize / 2; i++)
         {
           for (int j = -kernelSize / 2; j < kernelSize / 2; j++)

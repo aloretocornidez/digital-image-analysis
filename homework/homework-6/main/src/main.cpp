@@ -30,38 +30,45 @@ int main(int argc, char **argv)
   cv::Mat image_3 = cv::Mat(inputImage.rows, inputImage.cols, CV_8U);
   cv::Mat image_4 = cv::Mat(inputImage.rows, inputImage.cols, CV_8U);
 
+  // This is the kernel size that is being used.
+  const int KERNEL_SIZE = 11;
+
   // Creating the First Image (Dilation)
-  // dilation::dilateImage(inputImage, dilatedInputImage);
+  dilation::dilateImage(inputImage, dilatedInputImage, KERNEL_SIZE);
   // showTwoImages("Input Image", inputImage, "Image 1 (Dilation)", dilatedInputImage);
 
   // Creating the Second Image (Erosion)
-  erosion::erodeImage(inputImage, erodedInputImage);
-  showTwoImages("Input Image", inputImage, "Image 2 (Erosion)", erodedInputImage);
+  erosion::erodeImage(inputImage, erodedInputImage, KERNEL_SIZE);
+  // showTwoImages("Input Image", inputImage, "Image 2 (Erosion)", erodedInputImage);
 
   // Creating the Third Image (Erosion then Dilation)
-  // dilation::dilateImage(erodedInputImage, image_3);
+  dilation::dilateImage(erodedInputImage, image_3, KERNEL_SIZE);
   // showTwoImages("Eroded Image", erodedInputImage, "Image 3 (Erosion --> Dilation)", image_3);
 
   // // Creating the Fourth Image (Dilation then Erosion)
-  // erosion::erodeImage(dilatedInputImage, image_4);
-  // // showTwoImages("Dilated Image", dilatedInputImage, "Image 4 (Dilation --> Erosion)", image_4);
+  erosion::erodeImage(dilatedInputImage, image_4, KERNEL_SIZE);
+  // showTwoImages("Dilated Image", dilatedInputImage, "Image 4 (Dilation --> Erosion)", image_4);
 
-  // // Generating the image name
-  // cv::String imageName = argv[1];
-  // removeFileExtension(imageName);
+  // Generating the image name
+  cv::String imageName = argv[1];
+  removeFileExtension(imageName);
 
-  // // Saving Images
-  // cv::imwrite(imageName + "-image-1.png", dilatedInputImage);
-  // cv::imwrite(imageName + "-image-2.png", erodedInputImage);
-  // cv::imwrite(imageName + "-image-3.png", image_3);
-  // cv::imwrite(imageName + "-image-4.png", image_4);
+  // Saving Images
+  cv::imwrite(imageName + "-image-1.png", dilatedInputImage);
+  cv::imwrite(imageName + "-image-2.png", erodedInputImage);
+  cv::imwrite(imageName + "-image-3.png", image_3);
+  cv::imwrite(imageName + "-image-4.png", image_4);
 
 
   // // Freeing Memory
-  // dilatedInputImage.release();
-  // erodedInputImage.release();
-  // image_3.release();
-  // image_4.release();
+  dilatedInputImage.release();
+  erodedInputImage.release();
+  image_3.release();
+  image_4.release();
+
+
+
+  
 
   return 0;
 }
