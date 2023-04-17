@@ -36,22 +36,22 @@ int main(int argc, char **argv)
 
   // Creating the Second Image (Erosion)
   erosion::erodeImage(inputImage, erodedInputImage);
-  // showTwoImages("Input Image", inputImage, "Image 2 (Erosion)", erodedInputImage);
+  showTwoImages("Input Image", inputImage, "Image 2 (Erosion)", erodedInputImage);
 
-  // // Creating the Third Image (Erosion then Dilation)
+  // Creating the Third Image (Erosion then Dilation)
   // dilation::dilateImage(erodedInputImage, image_3);
-  // // showTwoImages("Eroded Image", erodedInputImage, "Image 3 (Erosion --> Dilation)", image_3);
+  // showTwoImages("Eroded Image", erodedInputImage, "Image 3 (Erosion --> Dilation)", image_3);
 
   // // Creating the Fourth Image (Dilation then Erosion)
   // erosion::erodeImage(dilatedInputImage, image_4);
   // // showTwoImages("Dilated Image", dilatedInputImage, "Image 4 (Dilation --> Erosion)", image_4);
 
   // // Generating the image name
-  cv::String imageName = argv[1];
-  removeFileExtension(imageName);
+  // cv::String imageName = argv[1];
+  // removeFileExtension(imageName);
 
   // // Saving Images
-  cv::imwrite(imageName + "-image-1.png", dilatedInputImage);
+  // cv::imwrite(imageName + "-image-1.png", dilatedInputImage);
   // cv::imwrite(imageName + "-image-2.png", erodedInputImage);
   // cv::imwrite(imageName + "-image-3.png", image_3);
   // cv::imwrite(imageName + "-image-4.png", image_4);

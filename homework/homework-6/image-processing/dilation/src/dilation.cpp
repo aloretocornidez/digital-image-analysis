@@ -34,7 +34,7 @@ void dilation::dilateImage(Mat &input, Mat &output)
     {
 
       // If the current pixel is a foreground pixel then the dilation operation is performed on that pixel.
-      if (input.at<uchar>(row, column) > 0)
+      if ((int)input.at<uchar>(row, column) > 0)
       {
 
         // Perform dilation.
